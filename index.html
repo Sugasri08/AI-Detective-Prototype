@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Detective — Risk & Evidence Analyzer</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="app-wrap">
+
+  <!-- Header -->
+  <header class="app-header">
+    <img src="assets/logo.svg" alt="AI Detective logo" class="logo"/>
+    <div class="header-text">
+      <h1>AI Detective</h1>
+      <p>Risk &amp; Evidence Analyzer — Identify suspicious communication patterns instantly</p>
+    </div>
+  </header>
+
+  <!-- Sample messages -->
+  <div class="samples-row">
+    <div class="samples-label">Try a sample message →</div>
+    <div class="samples-list">
+      <button class="sample-btn danger"
+        data-text="You need to delete all records before the auditors arrive tomorrow morning. Do this immediately and don't tell anyone on the team. We'll use a dummy invoice to cover the gap. No one will know.">
+        🔴 High risk
+      </button>
+      <button class="sample-btn warning"
+        data-text="Between us, I think we can make an exception just this once and skip the approval process. It's technically allowed if we call it a workaround. Keep this off the record for now.">
+        🟡 Medium risk
+      </button>
+      <button class="sample-btn ok"
+        data-text="As per our policy, I've attached the signed-off report for your review. The transaction has been documented and approved by compliance. Please see the attached report for the full audit trail.">
+        🟢 Safe
+      </button>
+      <button class="sample-btn warning"
+        data-text="I need you to transfer the funds to the offshore account without leaving a trace. It's urgent — act fast before the system logs it. This is confidential, don't forward to anyone.">
+        🔴 Financial fraud
+      </button>
+    </div>
+  </div>
+
+  <!-- Input panel -->
+  <div class="input-panel">
+    <div class="panel-label">Paste or type communication text</div>
+    <textarea
+      id="msg-input"
+      placeholder="Enter an email, chat message, internal memo, or any text to analyze for risk signals…"
+      spellcheck="false"
+    ></textarea>
+    <div class="input-footer">
+      <span id="char-count">0 chars</span>
+      <div class="btn-row">
+        <button id="clear-btn">Clear</button>
+        <button id="analyze-btn">Analyze  ⌘↵</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div id="output"></div>
+
+</div>
+
+<!-- Script order matters: keywords → analyzer → ui -->
+<script src="src/keywords.js"></script>
+<script src="src/analyzer.js"></script>
+<script src="src/ui.js"></script>
+
+</body>
+</html>

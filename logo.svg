@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" fill="none">
+  <!-- Shield -->
+  <path d="M22 3L6 10v11c0 9.5 6.8 18.4 16 20.9C31.2 39.4 38 30.5 38 21V10L22 3z"
+        fill="#1b1f2b" stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Magnifying glass circle -->
+  <circle cx="20" cy="21" r="7" stroke="#60a5fa" stroke-width="1.8" fill="none"/>
+  <!-- Magnifying glass handle -->
+  <line x1="25.2" y1="26.2" x2="30" y2="31" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>
+  <!-- Crosshair dot inside lens -->
+  <circle cx="20" cy="21" r="1.5" fill="#f05252"/>
+</svg>
