@@ -3,122 +3,456 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Detective Solutions — Risk & Evidence Analyzer</title>
-  <meta name="description" content="Uncover truth and evidence in organizational communications. AI-powered risk classification for compliance, security, and investigations."/>
+  <title>AI Detective Solutions — Uncovering Truth and Evidence</title>
+  <meta name="description" content="AI-powered forensic communication analysis. Detect fraud, misconduct, and compliance risks in real time."/>
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml"/>
-  <link rel="stylesheet" href="assets/style.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/main.css"/>
 </head>
 <body>
 
-<div class="app-wrap">
-
-  <!-- ── Masthead ─────────────────────────────────────────── -->
-  <header class="masthead">
-    <img src="assets/logo.svg" alt="AI Detective Solutions shield logo" class="masthead-logo"/>
-    <div class="masthead-body">
-      <h1 class="brand-name">AI Detective <span>Solutions</span></h1>
-      <p class="brand-tagline">Uncovering truth and evidence through intelligent forensic analysis</p>
-      <div class="legend">
-        <div class="legend-item">
-          <div class="legend-dot dot-red"></div>
-          Suspicious — score ≥ 6
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot dot-amber"></div>
-          Needs Review — score 2.5 – 6
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot dot-green"></div>
-          Safe — score &lt; 2.5
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ── Sample cases ──────────────────────────────────────── -->
-  <div class="samples-wrap">
-    <div class="section-heading">Load a sample case file</div>
-    <div class="samples-grid">
-
-      <button class="sample-btn case-high"
-        data-text="You need to delete all records before the auditors arrive tomorrow morning. Do this immediately and don't tell anyone on the team. We'll use a dummy invoice to cover the gap. No one will know.">
-        <div class="case-dot dot-red"></div>
-        Audit cover-up
+<!-- ══════════════════════════════════════════
+     NAVIGATION
+     ══════════════════════════════════════════ -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="#" class="nav__logo">
+      <img src="assets/logo.svg" alt="Logo" class="nav__logo-icon"/>
+      AI Detective <span>Solutions</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#analyzer">Try It</a></li>
+      <li><a href="#use-cases">Use Cases</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+    </ul>
+    <div class="nav__cta">
+      <a href="#analyzer" class="btn btn--gold btn--sm">Open Case</a>
+      <button class="nav__hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
       </button>
-
-      <button class="sample-btn case-high"
-        data-text="I need you to transfer the funds to the offshore account without leaving a trace. It's urgent — act fast before the system logs it. This is confidential, don't forward to anyone on the team.">
-        <div class="case-dot dot-red"></div>
-        Financial fraud
-      </button>
-
-      <button class="sample-btn case-high"
-        data-text="We need to inflate the numbers on the Q3 report before the board meeting. Erase the evidence of the earlier version and use a back channel to get this to the director. They won't find out.">
-        <div class="case-dot dot-red"></div>
-        Report falsification
-      </button>
-
-      <button class="sample-btn case-medium"
-        data-text="Between us, I think we can make an exception just this once and skip the approval process. It's technically allowed if we call it a workaround. Keep this off the record for now and don't log this.">
-        <div class="case-dot dot-amber"></div>
-        Policy bypass
-      </button>
-
-      <button class="sample-btn case-medium"
-        data-text="This is between us — forward the client credentials to my personal email. Don't log this request. We need to move fast before the quarterly review. Keep it confidential.">
-        <div class="case-dot dot-amber"></div>
-        Data exfiltration
-      </button>
-
-      <button class="sample-btn case-low"
-        data-text="As per our policy, I've attached the signed-off report for your review. The transaction has been documented and approved by compliance. Please see the attached report for the full audit trail. I've cc'd the team for transparency.">
-        <div class="case-dot dot-green"></div>
-        Compliant memo
-      </button>
-
     </div>
   </div>
+</nav>
 
-  <!-- ── Evidence submission form ──────────────────────────── -->
-  <div class="input-panel">
-    <div class="input-panel-header">
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-        <rect x="1.5" y="1" width="10" height="11" rx="1.5" stroke="currentColor" stroke-width="1"/>
-        <line x1="4" y1="4.5" x2="9" y2="4.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
-        <line x1="4" y1="6.5" x2="9" y2="6.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
-        <line x1="4" y1="8.5" x2="6.5" y2="8.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
-      </svg>
-      Evidence submission — paste communication for forensic analysis
-    </div>
 
-    <textarea
-      id="msg-input"
-      placeholder="Submit an email, internal memo, chat log, or any written communication for analysis. The detective engine will identify risk signals and classify the threat level…"
-      spellcheck="false"
-    ></textarea>
+<!-- ══════════════════════════════════════════
+     HERO
+     ══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero__grid-bg"></div>
+  <div class="hero__glow"></div>
 
-    <div class="input-footer">
-      <span id="char-count">0 chars</span>
-      <div class="btn-group">
-        <button id="btn-clear">Clear</button>
-        <button id="btn-analyze">Open Case  ⌘↵</button>
+  <div class="container">
+    <div class="hero__inner">
+      <div class="hero__eyebrow">AI Detective Solutions</div>
+
+      <h1 class="hero__title">
+        Uncovering <em>Truth</em><br>and Evidence
+      </h1>
+
+      <p class="hero__subtitle">
+        Forensic-grade AI that scans organizational communications in real time — surfacing fraud signals, compliance violations, and insider threats before they become crises.
+      </p>
+
+      <div class="hero__actions">
+        <a href="#analyzer" class="btn btn--gold btn--lg">Open the Analyzer</a>
+        <a href="#how-it-works" class="btn btn--outline btn--lg">See How It Works</a>
+      </div>
+
+      <div class="hero__stats">
+        <div>
+          <div class="hero__stat-num">
+            <span class="count-up" data-target="70" data-suffix="%">0%</span>
+          </div>
+          <div class="hero__stat-label">Review workload reduced</div>
+        </div>
+        <div>
+          <div class="hero__stat-num">
+            <span class="count-up" data-target="100" data-suffix="%">0%</span>
+          </div>
+          <div class="hero__stat-label">Communication coverage</div>
+        </div>
+        <div>
+          <div class="hero__stat-num">
+            <span class="count-up" data-target="15" data-suffix="M+">0M+</span>
+          </div>
+          <div class="hero__stat-label">Avg insider threat cost</div>
+        </div>
+        <div>
+          <div class="hero__stat-num">&lt;<span class="count-up" data-target="1" data-suffix="s">0s</span></div>
+          <div class="hero__stat-label">Analysis per message</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="divider"></div>
+  <div class="hero__scroll">↓ scroll to investigate</div>
+</section>
 
-  <!-- ── Case output ───────────────────────────────────────── -->
-  <div id="output"></div>
+<div class="rule"></div>
 
-</div><!-- /.app-wrap -->
 
-<!-- Script load order: keywords → analyzer → ui -->
-<script src="src/keywords.js"></script>
-<script src="src/analyzer.js"></script>
-<script src="src/ui.js"></script>
+<!-- ══════════════════════════════════════════
+     STATS BAND
+     ══════════════════════════════════════════ -->
+<div class="stats-band">
+  <div class="container">
+    <div class="stats-band__grid">
+      <div class="stats-band__item reveal">
+        <div class="stats-band__num">$15.4M</div>
+        <div class="stats-band__label">Average insider threat cost per year</div>
+      </div>
+      <div class="stats-band__item reveal reveal-delay-1">
+        <div class="stats-band__num">63%</div>
+        <div class="stats-band__label">Of breaches involve internal actors</div>
+      </div>
+      <div class="stats-band__item reveal reveal-delay-2">
+        <div class="stats-band__num">7%</div>
+        <div class="stats-band__label">Of organizations detect threats in 24h</div>
+      </div>
+      <div class="stats-band__item reveal reveal-delay-3">
+        <div class="stats-band__num">$4M+</div>
+        <div class="stats-band__label">Average compliance fine per incident</div>
+      </div>
+    </div>
+  </div>
+</div>
 
+
+<!-- ══════════════════════════════════════════
+     HOW IT WORKS
+     ══════════════════════════════════════════ -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <div class="section-tag reveal">The investigation process</div>
+    <h2 class="reveal">How the detective<br>finds the truth</h2>
+    <p class="reveal" style="max-width:520px;margin-top:14px;">Three layers of forensic analysis work together — from raw pattern matching to contextual intelligence — to surface what matters.</p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step__num">01 — Ingest</div>
+        <div class="step__title">Evidence submission</div>
+        <div class="step__body">Paste any written communication — email, memo, chat log, ticket — into the analyzer. The engine accepts raw text of any length and begins processing immediately.</div>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step__num">02 — Scan</div>
+        <div class="step__title">Forensic signal detection</div>
+        <div class="step__body">Three parallel scans run simultaneously: a keyword dictionary (70+ signals), five contextual regex pattern engines, and behavioral heuristics that catch stacking manipulation tactics.</div>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step__num">03 — Report</div>
+        <div class="step__title">Case file generation</div>
+        <div class="step__body">Every finding produces a structured case report: a unique ID, confidence score, highlighted transcript with color-coded evidence, and a grouped evidence log — ready for escalation or audit.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ══════════════════════════════════════════
+     FEATURES
+     ══════════════════════════════════════════ -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-tag reveal">Capabilities</div>
+    <h2 class="reveal">Built for investigators,<br>compliance teams, and analysts</h2>
+
+    <div class="features">
+      <div class="feature reveal">
+        <div class="feature__icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="13.7" y1="13.7" x2="17.5" y2="17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="9" cy="9" r="2" fill="currentColor" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="feature__title">Three-tier risk classification</div>
+        <div class="feature__body">Every communication is classified as Suspicious, Needs Review, or Safe — with a confidence percentage and an internal risk score that drives the classification, not a black box.</div>
+      </div>
+
+      <div class="feature reveal reveal-delay-1">
+        <div class="feature__icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="3" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M6 8h8M6 11h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="15" cy="11" r="2" fill="currentColor" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="feature__title">Explainable evidence log</div>
+        <div class="feature__body">Every verdict is backed by a cited evidence log. Risk signals are highlighted inline in the source text — analysts see exactly what triggered the alert and why, not just a score.</div>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature__icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2L3 6v6c0 4 2.9 7.7 7 9 4.1-1.3 7-5 7-9V6L10 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            <polyline points="7,10 9.2,12.5 13,8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature__title">Contextual pattern matching</div>
+        <div class="feature__body">Five regex-based pattern engines catch multi-word fraud signals that keyword lists miss: financial fraud, data exfiltration, urgency manipulation, threat language, and identity deception.</div>
+      </div>
+
+      <div class="feature reveal reveal-delay-1">
+        <div class="feature__icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="10" width="4" height="8" rx="1" fill="currentColor" opacity="0.3"/>
+            <rect x="8" y="6" width="4" height="12" rx="1" fill="currentColor" opacity="0.5"/>
+            <rect x="14" y="2" width="4" height="16" rx="1" fill="currentColor" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="feature__title">Risk confidence meter</div>
+        <div class="feature__body">An animated confidence bar translates the raw risk score into a 0–100% confidence percentage, giving analysts a fast intuitive read on severity without needing to interpret raw numbers.</div>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature__icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M7 7h6M7 10h6M7 13h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="feature__title">Unique case IDs &amp; timestamps</div>
+        <div class="feature__body">Every analysis generates a unique case reference (AID-YEAR-XXXXX) with a precise timestamp — creating an immutable, auditable investigation record for legal, HR, and compliance use.</div>
+      </div>
+
+      <div class="feature reveal reveal-delay-1">
+        <div class="feature__icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature__title">Zero-infrastructure deployment</div>
+        <div class="feature__body">The prototype runs entirely in the browser — no server, no database, no installation. Open index.html and the full forensic engine is live. Designed for rapid demonstration and pilot rollout.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ══════════════════════════════════════════
+     LIVE ANALYZER
+     ══════════════════════════════════════════ -->
+<section class="section" id="analyzer">
+  <div class="container">
+    <div class="section-tag reveal">Live tool</div>
+    <h2 class="reveal">Open a case now</h2>
+    <p class="reveal" style="max-width:500px;margin-top:14px;">Submit any communication below. The forensic engine classifies it in under a second and generates a full case report.</p>
+
+    <div class="tool-wrap reveal" style="margin-top:48px;">
+      <div class="tool-bar">
+        <div class="tool-bar__dots"><span></span><span></span><span></span></div>
+        <span class="tool-bar__title">ai-detective-solutions / evidence-analyzer</span>
+        <span class="tool-bar__title" style="opacity:0.4">v1.0.0</span>
+      </div>
+
+      <div class="tool-body">
+        <!-- Sample cases -->
+        <div class="tool-label">Load a sample case</div>
+        <div class="tool-samples">
+          <button class="tool-sample s-red"
+            data-text="You need to delete all records before the auditors arrive tomorrow morning. Do this immediately and don't tell anyone on the team. We'll use a dummy invoice to cover the gap. No one will know.">
+            <div class="tool-sample__dot" style="background:#c0392b"></div>Audit cover-up
+          </button>
+          <button class="tool-sample s-red"
+            data-text="I need you to transfer the funds to the offshore account without leaving a trace. It's urgent — act fast before the system logs it. This is confidential, don't forward to anyone.">
+            <div class="tool-sample__dot" style="background:#c0392b"></div>Financial fraud
+          </button>
+          <button class="tool-sample s-amber"
+            data-text="Between us, I think we can make an exception just this once and skip the approval process. It's technically allowed if we call it a workaround. Keep this off the record for now.">
+            <div class="tool-sample__dot" style="background:#c47d11"></div>Policy bypass
+          </button>
+          <button class="tool-sample s-amber"
+            data-text="This is between us — forward the client credentials to my personal email. Don't log this request. We need to move fast before the quarterly review. Keep it confidential.">
+            <div class="tool-sample__dot" style="background:#c47d11"></div>Data exfil
+          </button>
+          <button class="tool-sample s-teal"
+            data-text="As per our policy, I've attached the signed-off report for your review. The transaction has been documented and approved by compliance. Please see the attached report for the full audit trail.">
+            <div class="tool-sample__dot" style="background:#148a74"></div>Compliant memo
+          </button>
+        </div>
+
+        <!-- Input -->
+        <div class="tool-label" style="margin-top:20px;">Evidence submission</div>
+        <textarea class="tool-input" id="evidence-input"
+          placeholder="Paste an email, internal memo, chat message, or any written communication for forensic analysis…"
+          spellcheck="false"></textarea>
+
+        <div class="tool-footer">
+          <span class="tool-footer__meta" id="char-count">0 chars</span>
+          <div class="tool-footer__btns">
+            <button class="btn btn--outline btn--sm" id="btn-clear">Clear</button>
+            <button class="btn btn--gold btn--sm" id="btn-analyze">Open Case  ⌘↵</button>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div id="tool-output"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ══════════════════════════════════════════
+     USE CASES
+     ══════════════════════════════════════════ -->
+<section class="section" id="use-cases">
+  <div class="container">
+    <div class="section-tag reveal">Who it protects</div>
+    <h2 class="reveal">Built for every team<br>that carries risk</h2>
+
+    <div class="use-cases">
+      <div class="use-case reveal">
+        <div class="use-case__tag">Compliance &amp; Legal</div>
+        <div class="use-case__title">Audit-ready, every time</div>
+        <div class="use-case__body">Automatically flag communications referencing unauthorized transactions, process bypasses, or data destruction — with cited evidence suitable for regulatory submission. Reduce manual review workload by up to 70% while achieving 100% coverage.</div>
+      </div>
+
+      <div class="use-case reveal reveal-delay-1">
+        <div class="use-case__tag">Security Operations</div>
+        <div class="use-case__title">Catch threats before they escalate</div>
+        <div class="use-case__body">Detect financial fraud signals, data exfiltration attempts, and social engineering tactics in internal communications. Integration-ready for SIEM and UEBA workflows — use as a pre-filter before escalation.</div>
+      </div>
+
+      <div class="use-case reveal reveal-delay-2">
+        <div class="use-case__tag">HR &amp; Investigations</div>
+        <div class="use-case__title">Defensible evidence, fast</div>
+        <div class="use-case__body">When misconduct allegations arise, investigators need speed and auditability. AI Detective surfaces relevant signals and organizes them into case files with unique IDs, timestamps, and evidence logs — ready for legal review.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ══════════════════════════════════════════
+     ROADMAP
+     ══════════════════════════════════════════ -->
+<section class="section" id="roadmap">
+  <div class="container">
+    <div class="section-tag reveal">Where we're going</div>
+    <h2 class="reveal">From prototype<br>to platform</h2>
+
+    <div class="roadmap reveal" style="margin-top:48px;">
+      <div class="roadmap__phases">
+        <button class="phase-btn active" data-phase="1">Phase 1</button>
+        <button class="phase-btn" data-phase="2">Phase 2</button>
+        <button class="phase-btn" data-phase="3">Phase 3</button>
+        <button class="phase-btn" data-phase="4">Phase 4</button>
+      </div>
+
+      <div class="roadmap__content">
+        <div class="phase-panel active" id="phase-1">
+          <div class="phase-panel__tag">Weeks 1–4</div>
+          <div class="phase-panel__title">AI Integration</div>
+          <div class="phase-panel__body">Replace rule-based scoring with a fine-tuned LLM. The output shape stays identical — the engine just becomes dramatically smarter.</div>
+          <div class="phase-items">
+            <div class="phase-item">Nuanced language understanding — sarcasm, euphemism, indirect language</div>
+            <div class="phase-item">Domain-specific vocabulary (finance, legal, healthcare)</div>
+            <div class="phase-item">Multilingual support (12+ languages)</div>
+            <div class="phase-item">Confidence calibration through analyst feedback</div>
+          </div>
+        </div>
+
+        <div class="phase-panel" id="phase-2">
+          <div class="phase-panel__tag">Weeks 4–10</div>
+          <div class="phase-panel__title">Platform Connectors</div>
+          <div class="phase-panel__body">Connect directly to where communication happens — without requiring manual text submission.</div>
+          <div class="phase-items">
+            <div class="phase-item">Microsoft 365 and Google Workspace email gateway</div>
+            <div class="phase-item">Slack and Microsoft Teams webhook monitoring</div>
+            <div class="phase-item">REST API for SIEM / GRC platform integration</div>
+            <div class="phase-item">Batch processing for historical communication analysis</div>
+          </div>
+        </div>
+
+        <div class="phase-panel" id="phase-3">
+          <div class="phase-panel__tag">Weeks 10–18</div>
+          <div class="phase-panel__title">Investigator Dashboard</div>
+          <div class="phase-panel__body">A full case management interface for compliance officers and security analysts.</div>
+          <div class="phase-items">
+            <div class="phase-item">Case queue with risk-prioritized triage</div>
+            <div class="phase-item">Department and user-level risk trend analytics</div>
+            <div class="phase-item">Alert escalation workflows with SLA tracking</div>
+            <div class="phase-item">Exportable PDF case reports for legal and HR</div>
+          </div>
+        </div>
+
+        <div class="phase-panel" id="phase-4">
+          <div class="phase-panel__tag">Ongoing</div>
+          <div class="phase-panel__title">Adaptive Learning</div>
+          <div class="phase-panel__body">The system learns from your organization — reducing false positives and improving detection over time.</div>
+          <div class="phase-items">
+            <div class="phase-item">Analyst feedback loop trains the classification model</div>
+            <div class="phase-item">Organization-specific vocabulary and risk pattern learning</div>
+            <div class="phase-item">Anomaly detection based on individual communication baselines</div>
+            <div class="phase-item">Peer-comparison scoring to flag behavioral outliers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ══════════════════════════════════════════
+     CTA
+     ══════════════════════════════════════════ -->
+<section class="section--sm">
+  <div class="container">
+    <div class="cta-section reveal">
+      <div class="section-tag" style="justify-content:center;">Start investigating</div>
+      <h2 class="cta-section__title">Every communication<br>leaves a trace</h2>
+      <p class="cta-section__sub">
+        The prototype is live, browser-based, and requires no setup. Open it now and run your first forensic analysis in under 30 seconds.
+      </p>
+      <div class="cta-section__actions">
+        <a href="#analyzer" class="btn btn--gold btn--lg">Open the Analyzer</a>
+        <a href="pages/about.html" class="btn btn--ghost btn--lg">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img src="assets/logo.svg" alt="Logo" style="width:24px;height:24px;"/>
+        AI Detective <span>Solutions</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#analyzer">Analyzer</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="pages/about.html">About</a></li>
+      </ul>
+      <div class="footer__copy">
+        &copy; 2025 AI Detective Solutions. Uncovering truth and evidence.
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="assets/js/engine.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
