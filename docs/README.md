@@ -1,129 +1,177 @@
-# AI Detective — Risk & Evidence Analyzer
+# AI Detective Solutions
+## Uncovering Truth and Evidence
 
-A lightweight, browser-based prototype that classifies text communications as **Suspicious**, **Needs Review**, or **Safe** using rule-based risk scoring with pattern matching.
+A browser-based forensic communication analyzer that classifies text as **Suspicious**, **Needs Review**, or **Safe** — packaged as a professional investigative tool.
 
 ---
 
 ## Quick Start
 
-No installation, no build step, no dependencies.
+No installation or build step required.
 
 ```bash
-# Clone or download the project
-git clone https://github.com/your-org/ai-detective.git
-cd ai-detective
-
-# Open in browser
+git clone https://github.com/your-org/ai-detective-solutions.git
+cd ai-detective-solutions
 open index.html        # macOS
 start index.html       # Windows
 xdg-open index.html    # Linux
 ```
 
-That's it. The app runs entirely in the browser.
+Open `index.html` directly in any modern browser. The app runs entirely client-side.
 
 ---
 
-## File Structure
+## Project Structure
 
 ```
-ai-detective/
-├── index.html          ← Entry point — open this
+ai-detective-solutions/
+├── index.html              ← Entry point — open this in a browser
 ├── src/
-│   ├── keywords.js     ← Pattern dictionaries (high/medium/safe signals)
-│   ├── analyzer.js     ← Scoring engine + classification logic
-│   └── ui.js           ← Rendering, interaction, event handling
+│   ├── keywords.js         ← Evidence pattern dictionaries
+│   ├── analyzer.js         ← Forensic scoring engine
+│   └── ui.js               ← Case rendering & interaction layer
 ├── assets/
-│   ├── style.css       ← Dark detective theme
-│   └── logo.svg        ← Brand icon
+│   ├── style.css           ← Full detective-themed stylesheet
+│   └── logo.svg            ← Gold shield brand mark
 └── docs/
-    ├── README.md       ← You are here
-    └── PITCH.md        ← Business case & impact narrative
+    ├── README.md           ← Technical guide (this file)
+    └── PITCH.md            ← Business case & impact narrative
 ```
 
 ---
 
-## How It Works
+## Architecture
 
-### Scoring Engine (`analyzer.js`)
+### `src/keywords.js` — Evidence Pattern Library
 
-Each text input is scored on a weighted point system:
+Three dictionaries that form the foundation of detection:
 
-| Signal type           | Weight  | Source          |
-|-----------------------|---------|-----------------|
-| High-risk keyword     | +3.0    | `keywords.js`   |
-| Medium-risk keyword   | +1.5    | `keywords.js`   |
-| Safe/compliant signal | −1.0    | `keywords.js`   |
-| Contextual pattern    | +4.0    | `PATTERNS` regex|
-| Multiple urgency cues | +2.0    | Heuristic       |
+| Dictionary     | Purpose                                       | Score effect |
+|----------------|-----------------------------------------------|:------------:|
+| `high_risk`    | Fraud, cover-up, destruction of records       | +3.0 each    |
+| `medium_risk`  | Policy violations, boundary-pushing language  | +1.5 each    |
+| `safe`         | Compliance signals, transparent conduct       | −1.0 each    |
 
-**Classification thresholds:**
+Five contextual regex patterns catch multi-word fraud signals:
 
-| Score range | Verdict       |
-|-------------|---------------|
-| ≥ 6.0       | Suspicious    |
-| 2.5 – 5.9   | Needs Review  |
-| < 2.5       | Safe          |
-
-Risk confidence is displayed as a percentage (score / 20, capped at 100%).
-
-### Pattern Library (`keywords.js`)
-
-Four context-aware regex patterns catch phrases that single-keyword matching would miss:
-
-- **Urgency manipulation** — "delete before anyone", "act fast"
-- **Financial fraud** — "transfer without trace", "offshore account"
-- **Data exfiltration** — "send external", "forward private"
-- **Threat language** — "or else", "you'll regret"
-
-### Evidence Highlighting
-
-Detected signals are highlighted inline within the original text using color-coded marks:
-- 🔴 Red — high-risk signals
-- 🟡 Amber — medium-risk signals
-- 🟢 Green — safe/compliant signals
+| Pattern key          | Detects                              | Weight |
+|----------------------|--------------------------------------|:------:|
+| `urgency_manipulation` | Pressure tactics, time-coercion    | +3     |
+| `financial_fraud`      | Transfer/payment laundering signals | +4     |
+| `data_exfiltration`    | Credential or data leakage signals  | +4     |
+| `threat_language`      | Coercion or intimidation language   | +4     |
+| `identity_deception`   | Impersonation or access fraud       | +4     |
 
 ---
 
-## Extending the System
+### `src/analyzer.js` — Forensic Scoring Engine
 
-### Add new keywords
+**Scoring pipeline:**
 
-Edit `src/keywords.js` and add terms to the appropriate array:
-
-```js
-KEYWORDS.high_risk.push("your new term");
+```
+Input text
+  │
+  ├─ High-risk keyword scan      → score += 3.0 per hit
+  ├─ Medium-risk keyword scan    → score += 1.5 per hit
+  ├─ Safe keyword scan           → score -= 1.0 per hit
+  ├─ Pattern matching (regex)    → score += pattern.weight per match
+  └─ Heuristics                  → score += 2.0 (stacked urgency)
+        │
+        ▼
+  Clamp score ≥ 0
+        │
+        ▼
+  confidence = min(100, round(score / 20 × 100))
+        │
+        ▼
+  score ≥ 6.0  → Suspicious
+  score ≥ 2.5  → Needs Review
+  score <  2.5 → Safe
 ```
 
-### Add new patterns
+**Public API:**
 
 ```js
-PATTERNS.insider_threat = /\b(steal.{0,20}data|sell.{0,20}access|leak.{0,20}credentials)\b/gi;
+Analyzer.scoreText(text)
+// Returns: { verdict, risk, confidence, score, evidence[], wordCount, timestamp }
+
+Analyzer.highlightEvidence(text, evidence)
+// Returns: HTML string with <mark class="ev-high|ev-med|ev-safe"> spans
+
+Analyzer.generateCaseId()
+// Returns: "AID-2025-XXXXX" unique case reference
 ```
 
-### Adjust thresholds
+---
 
-In `analyzer.js`, change the `score >= 6` and `score >= 2.5` thresholds to tune sensitivity.
+### `src/ui.js` — Rendering & Interaction Layer
 
-### Connect a real AI backend
+Builds and injects the full case report card into `#output`. The report contains:
 
-Replace the scoring logic in `analyzer.js` with a `fetch()` call to any NLP API (OpenAI, Claude, etc.):
+- **Case header** — verdict badge, unique case ID, metadata (confidence, word count, signal count, timestamp)
+- **Confidence meter** — animated bar from 0–100% with Low/Medium/High ticks
+- **Analyzed transcript** — original text with color-coded evidence highlights
+- **Evidence log** — grouped pills for high-risk, medium-risk, and safe signals
+- **Case footer** — internal score display + contextual follow-up button
+
+---
+
+## Customization
+
+### Add new detection keywords
 
 ```js
-const res = await fetch("https://api.yourservice.com/classify", {
-  method: "POST",
-  body: JSON.stringify({ text }),
-});
-const { verdict, confidence, evidence } = await res.json();
+// In src/keywords.js
+KEYWORDS.high_risk.push("your new high-risk phrase");
+KEYWORDS.medium_risk.push("policy concern phrase");
+KEYWORDS.safe.push("compliant indicator phrase");
+```
+
+### Add a new contextual pattern
+
+```js
+// In src/keywords.js
+PATTERNS.insider_threat = {
+  label:  "Insider threat signal",
+  regex:  /\b(sell.{0,20}access|leak.{0,20}data|steal.{0,20}from)\b/gi,
+  weight: 4,
+};
+```
+
+### Tune classification thresholds
+
+```js
+// In src/analyzer.js
+const THRESHOLDS = {
+  HIGH:   8,    // raise this to reduce false positives
+  MEDIUM: 3,    // raise this to flag fewer items for review
+};
+```
+
+### Swap in a real AI backend
+
+Replace `Analyzer.scoreText()` body with a `fetch()` call:
+
+```js
+async function scoreText(text) {
+  const res = await fetch("https://api.your-service.com/classify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  return await res.json();
+  // Expected shape: { verdict, risk, confidence, score, evidence[], wordCount, timestamp }
+}
 ```
 
 ---
 
 ## Browser Support
 
-Works in all modern browsers (Chrome, Firefox, Safari, Edge). No polyfills needed.
+Chrome 90+, Firefox 88+, Safari 14+, Edge 90+. No polyfills or transpilation needed.
 
 ---
 
 ## License
 
-MIT — free to use, modify, and distribute.
+MIT — free to use, extend, and distribute.

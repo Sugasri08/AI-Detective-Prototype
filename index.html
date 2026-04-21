@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Detective — Risk & Evidence Analyzer</title>
+  <title>AI Detective Solutions — Risk & Evidence Analyzer</title>
+  <meta name="description" content="Uncover truth and evidence in organizational communications. AI-powered risk classification for compliance, security, and investigations."/>
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="assets/style.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -13,61 +14,108 @@
 
 <div class="app-wrap">
 
-  <!-- Header -->
-  <header class="app-header">
-    <img src="assets/logo.svg" alt="AI Detective logo" class="logo"/>
-    <div class="header-text">
-      <h1>AI Detective</h1>
-      <p>Risk &amp; Evidence Analyzer — Identify suspicious communication patterns instantly</p>
+  <!-- ── Masthead ─────────────────────────────────────────── -->
+  <header class="masthead">
+    <img src="assets/logo.svg" alt="AI Detective Solutions shield logo" class="masthead-logo"/>
+    <div class="masthead-body">
+      <h1 class="brand-name">AI Detective <span>Solutions</span></h1>
+      <p class="brand-tagline">Uncovering truth and evidence through intelligent forensic analysis</p>
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot dot-red"></div>
+          Suspicious — score ≥ 6
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot dot-amber"></div>
+          Needs Review — score 2.5 – 6
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot dot-green"></div>
+          Safe — score &lt; 2.5
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- Sample messages -->
-  <div class="samples-row">
-    <div class="samples-label">Try a sample message →</div>
-    <div class="samples-list">
-      <button class="sample-btn danger"
+  <!-- ── Sample cases ──────────────────────────────────────── -->
+  <div class="samples-wrap">
+    <div class="section-heading">Load a sample case file</div>
+    <div class="samples-grid">
+
+      <button class="sample-btn case-high"
         data-text="You need to delete all records before the auditors arrive tomorrow morning. Do this immediately and don't tell anyone on the team. We'll use a dummy invoice to cover the gap. No one will know.">
-        🔴 High risk
+        <div class="case-dot dot-red"></div>
+        Audit cover-up
       </button>
-      <button class="sample-btn warning"
-        data-text="Between us, I think we can make an exception just this once and skip the approval process. It's technically allowed if we call it a workaround. Keep this off the record for now.">
-        🟡 Medium risk
+
+      <button class="sample-btn case-high"
+        data-text="I need you to transfer the funds to the offshore account without leaving a trace. It's urgent — act fast before the system logs it. This is confidential, don't forward to anyone on the team.">
+        <div class="case-dot dot-red"></div>
+        Financial fraud
       </button>
-      <button class="sample-btn ok"
-        data-text="As per our policy, I've attached the signed-off report for your review. The transaction has been documented and approved by compliance. Please see the attached report for the full audit trail.">
-        🟢 Safe
+
+      <button class="sample-btn case-high"
+        data-text="We need to inflate the numbers on the Q3 report before the board meeting. Erase the evidence of the earlier version and use a back channel to get this to the director. They won't find out.">
+        <div class="case-dot dot-red"></div>
+        Report falsification
       </button>
-      <button class="sample-btn warning"
-        data-text="I need you to transfer the funds to the offshore account without leaving a trace. It's urgent — act fast before the system logs it. This is confidential, don't forward to anyone.">
-        🔴 Financial fraud
+
+      <button class="sample-btn case-medium"
+        data-text="Between us, I think we can make an exception just this once and skip the approval process. It's technically allowed if we call it a workaround. Keep this off the record for now and don't log this.">
+        <div class="case-dot dot-amber"></div>
+        Policy bypass
       </button>
+
+      <button class="sample-btn case-medium"
+        data-text="This is between us — forward the client credentials to my personal email. Don't log this request. We need to move fast before the quarterly review. Keep it confidential.">
+        <div class="case-dot dot-amber"></div>
+        Data exfiltration
+      </button>
+
+      <button class="sample-btn case-low"
+        data-text="As per our policy, I've attached the signed-off report for your review. The transaction has been documented and approved by compliance. Please see the attached report for the full audit trail. I've cc'd the team for transparency.">
+        <div class="case-dot dot-green"></div>
+        Compliant memo
+      </button>
+
     </div>
   </div>
 
-  <!-- Input panel -->
+  <!-- ── Evidence submission form ──────────────────────────── -->
   <div class="input-panel">
-    <div class="panel-label">Paste or type communication text</div>
+    <div class="input-panel-header">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <rect x="1.5" y="1" width="10" height="11" rx="1.5" stroke="currentColor" stroke-width="1"/>
+        <line x1="4" y1="4.5" x2="9" y2="4.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+        <line x1="4" y1="6.5" x2="9" y2="6.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+        <line x1="4" y1="8.5" x2="6.5" y2="8.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+      </svg>
+      Evidence submission — paste communication for forensic analysis
+    </div>
+
     <textarea
       id="msg-input"
-      placeholder="Enter an email, chat message, internal memo, or any text to analyze for risk signals…"
+      placeholder="Submit an email, internal memo, chat log, or any written communication for analysis. The detective engine will identify risk signals and classify the threat level…"
       spellcheck="false"
     ></textarea>
+
     <div class="input-footer">
       <span id="char-count">0 chars</span>
-      <div class="btn-row">
-        <button id="clear-btn">Clear</button>
-        <button id="analyze-btn">Analyze  ⌘↵</button>
+      <div class="btn-group">
+        <button id="btn-clear">Clear</button>
+        <button id="btn-analyze">Open Case  ⌘↵</button>
       </div>
     </div>
   </div>
 
-  <!-- Output -->
+  <div class="divider"></div>
+
+  <!-- ── Case output ───────────────────────────────────────── -->
   <div id="output"></div>
 
-</div>
+</div><!-- /.app-wrap -->
 
-<!-- Script order matters: keywords → analyzer → ui -->
+<!-- Script load order: keywords → analyzer → ui -->
 <script src="src/keywords.js"></script>
 <script src="src/analyzer.js"></script>
 <script src="src/ui.js"></script>
