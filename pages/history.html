@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Case History — EvidAI</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="../assets/css/main.css"/>
+  <style>
+    .history-hero { padding: 140px 0 60px; border-bottom: 1px solid var(--wire); }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 40px 0;
+    }
+
+    .stat-card {
+      background: var(--ink-2);
+      border: 1px solid var(--wire);
+      border-radius: var(--r-md);
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    .stat-card__num {
+      font-family: var(--ff-display);
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-card__label {
+      font-size: 11px;
+      color: var(--chalk-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--wire-mid);
+      background: transparent;
+      color: var(--chalk-3);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+    }
+
+    .filter-btn:hover { color: var(--chalk); border-color: var(--wire-hi); }
+    .filter-btn.active { color: var(--gold); border-color: var(--gold); background: var(--gold-dim); }
+
+    .clear-all-btn {
+      margin-left: auto;
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      padding: 6px 14px;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(192,57,43,0.3);
+      background: transparent;
+      color: var(--red-lit);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .clear-all-btn:hover { background: var(--red-dim); }
+
+    .cases-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .history-card {
+      background: var(--ink-2);
+      border: 1px solid var(--wire);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .history-card:hover { border-color: var(--wire-hi); }
+    .history-card.risk-high   { border-left: 3px solid var(--red); }
+    .history-card.risk-medium { border-left: 3px solid var(--amber-lit); }
+    .history-card.risk-low    { border-left: 3px solid var(--teal-lit); }
+
+    .history-card__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .history-card__left { display: flex; align-items: center; gap: 12px; }
+
+    .risk-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .history-card__verdict {
+      font-family: var(--ff-display);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .history-card__meta {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      color: var(--chalk-3);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .history-card__actions {
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .history-card:hover .history-card__actions { opacity: 1; }
+
+    .action-btn {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      padding: 5px 11px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--wire-mid);
+      background: transparent;
+      color: var(--chalk-3);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+    }
+
+    .action-btn:hover { color: var(--chalk); border-color: var(--wire-hi); background: var(--ink-3); }
+    .action-btn.pdf:hover { color: var(--gold); border-color: rgba(200,168,75,0.4); background: var(--gold-dim); }
+    .action-btn.del:hover { color: var(--red-lit); border-color: rgba(192,57,43,0.4); background: var(--red-dim); }
+
+    .history-card__preview {
+      padding: 0 20px 16px;
+      font-size: 13px;
+      color: var(--chalk-3);
+      font-style: italic;
+      font-weight: 300;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-top: 1px solid var(--wire);
+      padding-top: 12px;
+      display: none;
+    }
+
+    .history-card.expanded .history-card__preview { display: block; }
+
+    /* Expanded full case view */
+    .case-expanded-body {
+      border-top: 1px solid var(--wire);
+      padding: 20px;
+      background: var(--ink-3);
+      display: none;
+    }
+
+    .history-card.expanded .case-expanded-body { display: block; }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--chalk-3);
+    }
+
+    .empty-state__icon {
+      width: 56px; height: 56px;
+      margin: 0 auto 20px;
+      opacity: 0.3;
+    }
+
+    .empty-state__title {
+      font-family: var(--ff-display);
+      font-size: 22px;
+      color: var(--chalk-2);
+      margin-bottom: 10px;
+    }
+
+    .empty-state__sub { font-size: 14px; margin-bottom: 24px; }
+
+    /* Case detail (reused from main) */
+    .conf-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .conf-lbl { font-family: var(--ff-mono); font-size: 11px; color: var(--chalk-3); white-space: nowrap; }
+    .conf-track { flex: 1; height: 4px; background: var(--ink-4); border-radius: 2px; overflow: hidden; }
+    .conf-fill { height: 100%; border-radius: 2px; }
+    .conf-pct { font-family: var(--ff-mono); font-size: 11px; color: var(--chalk-2); min-width: 30px; text-align: right; }
+    .transcript-lbl { font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk-3); margin-bottom: 8px; }
+    .transcript { background: var(--ink); border: 1px solid var(--wire); border-radius: var(--r-md); padding: 12px 14px; font-size: 13px; font-style: italic; color: var(--chalk-2); line-height: 1.75; margin-bottom: 14px; word-break: break-word; }
+    mark { background: transparent; border-radius: 3px; padding: 1px 3px; font-style: normal; font-weight: 500; }
+    mark.ev-h { color: var(--red-lit);   background: var(--red-dim); }
+    mark.ev-m { color: var(--amber-lit); background: var(--amber-dim); }
+    mark.ev-s { color: var(--teal-lit);  background: var(--teal-dim); }
+    .ev-groups { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .ev-grp    { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+    .ev-hed    { font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--chalk-3); white-space: nowrap; }
+    .pill      { font-size: 11px; padding: 3px 10px; border-radius: var(--r-sm); border: 1px solid transparent; font-family: var(--ff-mono); }
+    .pill em   { font-style: normal; opacity: 0.6; }
+    .ph { color: var(--red-lit);   background: var(--red-dim);   border-color: rgba(192,57,43,0.3); }
+    .pm { color: var(--amber-lit); background: var(--amber-dim); border-color: rgba(196,125,17,0.3); }
+    .ps { color: var(--teal-lit);  background: var(--teal-dim);  border-color: rgba(20,138,116,0.3); }
+    .case-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
+    .score-lbl { font-family: var(--ff-mono); font-size: 11px; color: var(--chalk-3); }
+    .score-lbl strong { color: var(--chalk-2); }
+
+    @media(max-width:700px) {
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      .history-card__actions { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="../index.html" class="nav__logo">
+      <img src="../assets/logo.svg" alt="Logo" class="nav__logo-icon"/>
+      EvidAI <span>Solutions</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="../index.html#analyzer">Analyzer</a></li>
+      <li><a href="history.html" class="active">Case History</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav__cta">
+      <a href="../index.html#analyzer" class="btn btn--gold btn--sm">Open Case</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="history-hero">
+  <div class="container">
+    <div class="section-tag">Investigation archive</div>
+    <h1 style="max-width:600px;">Case History</h1>
+    <p style="max-width:500px;margin-top:14px;font-size:16px;">Every analysis you've run is saved here. Reopen, export, or delete past cases at any time.</p>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-card__num" id="stat-total" style="color:var(--chalk)">0</div>
+        <div class="stat-card__label">Total cases</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__num" id="stat-high" style="color:var(--red-lit)">0</div>
+        <div class="stat-card__label">Suspicious</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__num" id="stat-medium" style="color:var(--amber-lit)">0</div>
+        <div class="stat-card__label">Needs review</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__num" id="stat-low" style="color:var(--teal-lit)">0</div>
+        <div class="stat-card__label">Safe</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CASES -->
+<section class="section">
+  <div class="container">
+
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="high">Suspicious</button>
+      <button class="filter-btn" data-filter="medium">Needs Review</button>
+      <button class="filter-btn" data-filter="low">Safe</button>
+      <button class="clear-all-btn" id="clear-all-btn">Clear all history</button>
+    </div>
+
+    <div class="cases-list" id="cases-list"></div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/logo.svg" alt="Logo" style="width:24px;height:24px;"/>
+        EvidAI <span>Solutions</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="../index.html#analyzer">Analyzer</a></li>
+        <li><a href="history.html">Case History</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <div class="footer__copy">&copy; 2025 EvidAI — AI Detective Solutions.</div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../assets/js/engine.js"></script>
+<script src="../assets/js/history.js"></script>
+<script src="../assets/js/pdf-export.js"></script>
+<script>
+  let activeFilter = 'all';
+
+  function renderStats() {
+    const s = CaseHistory.getStats();
+    document.getElementById('stat-total').textContent  = s.total;
+    document.getElementById('stat-high').textContent   = s.high;
+    document.getElementById('stat-medium').textContent = s.medium;
+    document.getElementById('stat-low').textContent    = s.low;
+  }
+
+  function renderCases() {
+    const list = document.getElementById('cases-list');
+    let cases  = CaseHistory.getAll();
+
+    if (activeFilter !== 'all') cases = cases.filter(c => c.risk === activeFilter);
+
+    if (!cases.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <svg class="empty-state__icon" viewBox="0 0 56 56" fill="none">
+            <path d="M28 4L6 14v16c0 14 9.5 27 22 30.5C40.5 57 50 44 50 30V14L28 4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <circle cx="26" cy="29" r="9" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="32.4" y1="35.4" x2="38" y2="41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="empty-state__title">${activeFilter === 'all' ? 'No cases yet' : 'No cases in this category'}</div>
+          <div class="empty-state__sub">${activeFilter === 'all' ? 'Run your first analysis to start building your case archive.' : 'Try a different filter or run more analyses.'}</div>
+          <a href="../index.html#analyzer" class="btn btn--gold">Open the Analyzer</a>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = cases.map(c => {
+      const dotColor = c.risk === 'high' ? 'var(--red)' : c.risk === 'medium' ? 'var(--amber-lit)' : 'var(--teal-lit)';
+      const vColor   = c.risk === 'high' ? 'var(--red-lit)' : c.risk === 'medium' ? 'var(--amber-lit)' : 'var(--teal-lit)';
+      const ts = new Date(c.timestamp).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const preview = c.rawText.length > 120 ? c.rawText.slice(0, 120) + '…' : c.rawText;
+
+      return `
+        <div class="history-card risk-${c.risk}" data-id="${c.id}" onclick="toggleCard(this)">
+          <div class="history-card__head">
+            <div class="history-card__left">
+              <div class="risk-dot" style="background:${dotColor}"></div>
+              <div>
+                <div class="history-card__verdict" style="color:${vColor}">${c.verdict}</div>
+                <div class="history-card__meta">
+                  <span>${c.id}</span>
+                  <span>${c.confidence}% confidence</span>
+                  <span>${c.evidence.length} signals</span>
+                  <span>${ts}</span>
+                </div>
+              </div>
+            </div>
+            <div class="history-card__actions" onclick="event.stopPropagation()">
+              <button class="action-btn pdf" onclick="exportPDF('${c.id}')">PDF</button>
+              <button class="action-btn del" onclick="deleteCase('${c.id}')">Delete</button>
+            </div>
+          </div>
+          <div class="history-card__preview">${preview}</div>
+          <div class="case-expanded-body" id="expanded-${c.id}"></div>
+        </div>`;
+    }).join('');
+  }
+
+  function toggleCard(card) {
+    const id   = card.dataset.id;
+    const body = document.getElementById(`expanded-${id}`);
+    const isOpen = card.classList.contains('expanded');
+
+    document.querySelectorAll('.history-card.expanded').forEach(c => c.classList.remove('expanded'));
+
+    if (!isOpen) {
+      card.classList.add('expanded');
+      if (!body.innerHTML) {
+        const c = CaseHistory.getById(id);
+        if (c) body.innerHTML = buildExpandedCase(c);
+      }
+    }
+  }
+
+  function buildExpandedCase(c) {
+    const ht = Analyzer.highlightEvidence(c.rawText, c.evidence);
+    const barColor = c.risk==='high'?'#c0392b':c.risk==='medium'?'#c47d11':'#148a74';
+    const hi = c.evidence.filter(e=>e.level==='high');
+    const mi = c.evidence.filter(e=>e.level==='medium');
+    const si = c.evidence.filter(e=>e.level==='safe');
+    const pills = (items,cls) => items.map(e=>`<span class="pill ${cls}">${e.type==='pat'?`<em>${e.label}:</em> `:''}"${e.text}"</span>`).join('');
+    const grp = (items,cls,h) => items.length ? `<div class="ev-grp"><span class="ev-hed">${h}</span>${pills(items,cls)}</div>` : '';
+    return `
+      <div class="conf-row">
+        <span class="conf-lbl">Risk confidence</span>
+        <div class="conf-track"><div class="conf-fill" style="width:${c.confidence}%;background:${barColor}"></div></div>
+        <span class="conf-pct">${c.confidence}%</span>
+      </div>
+      <div class="transcript-lbl">Analyzed transcript</div>
+      <div class="transcript">${ht}</div>
+      <div class="ev-groups">
+        ${grp(hi,'ph','High-risk signals')}
+        ${grp(mi,'pm','Medium-risk signals')}
+        ${grp(si,'ps','Safe signals')}
+        ${c.evidence.length===0?'<p style="font-size:12px;color:var(--chalk-3)">No notable signals detected.</p>':''}
+      </div>
+      <div class="case-foot">
+        <span class="score-lbl">Internal score: <strong>${c.score}</strong> / 20</span>
+        <button class="btn btn--ghost btn--sm" onclick="exportPDF('${c.id}');event.stopPropagation()">Download PDF</button>
+      </div>`;
+  }
+
+  function exportPDF(id) {
+    const c = CaseHistory.getById(id);
+    if (c) PDFExport.generate(c);
+  }
+
+  function deleteCase(id) {
+    if (confirm('Delete this case? This cannot be undone.')) {
+      CaseHistory.remove(id);
+      renderStats();
+      renderCases();
+    }
+  }
+
+  // Filters
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderCases();
+    });
+  });
+
+  // Clear all
+  document.getElementById('clear-all-btn').addEventListener('click', () => {
+    if (confirm('Clear all case history? This cannot be undone.')) {
+      CaseHistory.clearAll();
+      renderStats();
+      renderCases();
+    }
+  });
+
+  // Init
+  renderStats();
+  renderCases();
+</script>
+</body>
+</html>

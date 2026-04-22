@@ -1,4 +1,4 @@
-// ─── AI Detective Solutions — Main JS ───────────────────────
+// ─── EvidAI — Main JS ───────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -71,6 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       const result  = Analyzer.scoreText(text);
       const caseId  = Analyzer.generateCaseId();
+      // Save to history
+      if(typeof CaseHistory !== 'undefined') CaseHistory.save(result, text, caseId);
+      // Store for PDF access
+      window._lastCase = { ...result, rawText: text, id: caseId };
       output.innerHTML = renderCase(result, text, caseId);
     }, 440);
   }
@@ -125,6 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="case-foot">
           <span class="score-lbl">Internal score: <strong>${r.score}</strong> / 20</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn--ghost btn--sm" onclick="(function(){if(typeof PDFExport!=='undefined')PDFExport.generate(window._lastCase)})()">Download PDF</button>
+            <a href="pages/history.html" class="btn btn--outline btn--sm">View history</a>
+          </div>
         </div>
       </div>`;
   }

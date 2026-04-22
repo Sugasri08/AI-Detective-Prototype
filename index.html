@@ -24,7 +24,7 @@
       <li><a href="#features">Features</a></li>
       <li><a href="#analyzer">Try It</a></li>
       <li><a href="#use-cases">Use Cases</a></li>
-      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="pages/history.html">Case History</a></li>
     </ul>
     <div class="nav__cta">
       <a href="#analyzer" class="btn btn--gold btn--sm">Open Case</a>
@@ -335,76 +335,6 @@
 <div class="rule"></div>
 
 
-<!-- ══════════════════════════════════════════
-     ROADMAP
-     ══════════════════════════════════════════ -->
-<section class="section" id="roadmap">
-  <div class="container">
-    <div class="section-tag reveal">Where we're going</div>
-    <h2 class="reveal">From prototype<br>to platform</h2>
-
-    <div class="roadmap reveal" style="margin-top:48px;">
-      <div class="roadmap__phases">
-        <button class="phase-btn active" data-phase="1">Phase 1</button>
-        <button class="phase-btn" data-phase="2">Phase 2</button>
-        <button class="phase-btn" data-phase="3">Phase 3</button>
-        <button class="phase-btn" data-phase="4">Phase 4</button>
-      </div>
-
-      <div class="roadmap__content">
-        <div class="phase-panel active" id="phase-1">
-          <div class="phase-panel__tag">Weeks 1–4</div>
-          <div class="phase-panel__title">AI Integration</div>
-          <div class="phase-panel__body">Replace rule-based scoring with a fine-tuned LLM. The output shape stays identical — the engine just becomes dramatically smarter.</div>
-          <div class="phase-items">
-            <div class="phase-item">Nuanced language understanding — sarcasm, euphemism, indirect language</div>
-            <div class="phase-item">Domain-specific vocabulary (finance, legal, healthcare)</div>
-            <div class="phase-item">Multilingual support (12+ languages)</div>
-            <div class="phase-item">Confidence calibration through analyst feedback</div>
-          </div>
-        </div>
-
-        <div class="phase-panel" id="phase-2">
-          <div class="phase-panel__tag">Weeks 4–10</div>
-          <div class="phase-panel__title">Platform Connectors</div>
-          <div class="phase-panel__body">Connect directly to where communication happens — without requiring manual text submission.</div>
-          <div class="phase-items">
-            <div class="phase-item">Microsoft 365 and Google Workspace email gateway</div>
-            <div class="phase-item">Slack and Microsoft Teams webhook monitoring</div>
-            <div class="phase-item">REST API for SIEM / GRC platform integration</div>
-            <div class="phase-item">Batch processing for historical communication analysis</div>
-          </div>
-        </div>
-
-        <div class="phase-panel" id="phase-3">
-          <div class="phase-panel__tag">Weeks 10–18</div>
-          <div class="phase-panel__title">Investigator Dashboard</div>
-          <div class="phase-panel__body">A full case management interface for compliance officers and security analysts.</div>
-          <div class="phase-items">
-            <div class="phase-item">Case queue with risk-prioritized triage</div>
-            <div class="phase-item">Department and user-level risk trend analytics</div>
-            <div class="phase-item">Alert escalation workflows with SLA tracking</div>
-            <div class="phase-item">Exportable PDF case reports for legal and HR</div>
-          </div>
-        </div>
-
-        <div class="phase-panel" id="phase-4">
-          <div class="phase-panel__tag">Ongoing</div>
-          <div class="phase-panel__title">Adaptive Learning</div>
-          <div class="phase-panel__body">The system learns from your organization — reducing false positives and improving detection over time.</div>
-          <div class="phase-items">
-            <div class="phase-item">Analyst feedback loop trains the classification model</div>
-            <div class="phase-item">Organization-specific vocabulary and risk pattern learning</div>
-            <div class="phase-item">Anomaly detection based on individual communication baselines</div>
-            <div class="phase-item">Peer-comparison scoring to flag behavioral outliers</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="rule"></div>
 
 
 <!-- ══════════════════════════════════════════
@@ -441,7 +371,7 @@
         <li><a href="#how-it-works">How It Works</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#analyzer">Analyzer</a></li>
-        <li><a href="#roadmap">Roadmap</a></li>
+
         <li><a href="pages/about.html">About</a></li>
       </ul>
       <div class="footer__copy">
@@ -452,7 +382,10 @@
 </footer>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="assets/js/engine.js"></script>
+<script src="assets/js/history.js"></script>
+<script src="assets/js/pdf-export.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
