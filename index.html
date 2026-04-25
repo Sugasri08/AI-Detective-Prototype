@@ -285,7 +285,10 @@
           spellcheck="false"></textarea>
 
         <div class="tool-footer">
-          <span class="tool-footer__meta" id="char-count">0 chars</span>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <span class="tool-footer__meta" id="char-count">0 chars</span>
+            <span class="tool-footer__meta" id="ml-status" style="font-family:var(--ff-mono);font-size:10px;letter-spacing:0.06em;transition:color 0.3s"></span>
+          </div>
           <div class="tool-footer__btns">
             <button class="btn btn--outline btn--sm" id="btn-clear">Clear</button>
             <button class="btn btn--gold btn--sm" id="btn-analyze">Open Case  ⌘↵</button>
@@ -384,6 +387,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="assets/js/engine.js"></script>
+<script src="assets/js/ml-engine.js"></script>
 <script src="assets/js/history.js"></script>
 <script src="assets/js/pdf-export.js"></script>
 <script src="assets/js/main.js"></script>
