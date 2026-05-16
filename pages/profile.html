@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile — EvidAI</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="../assets/css/main.css"/>
+  <style>
+    .profile-hero { padding:140px 0 60px; border-bottom:1px solid var(--wire); }
+
+    .profile-grid {
+      display:grid;
+      grid-template-columns:300px 1fr;
+      gap:28px;
+      margin-top:40px;
+      align-items:start;
+    }
+
+    /* Left card */
+    .profile-card {
+      background:var(--ink-2);
+      border:1px solid var(--wire);
+      border-radius:var(--r-lg);
+      padding:28px 24px;
+      text-align:center;
+      position:sticky;
+      top:calc(var(--nav-h) + 20px);
+    }
+
+    .avatar {
+      width:80px; height:80px; border-radius:50%;
+      background:var(--gold-dim);
+      border:2px solid var(--gold);
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--ff-display); font-size:30px; font-weight:700;
+      color:var(--gold); margin:0 auto 16px;
+      overflow:hidden;
+    }
+
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+
+    .profile-name { font-family:var(--ff-display); font-size:20px; font-weight:700; color:var(--chalk); margin-bottom:4px; }
+    .profile-email { font-size:12px; color:var(--chalk-3); margin-bottom:16px; word-break:break-all; }
+
+    .profile-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      font-family:var(--ff-mono); font-size:10px; letter-spacing:0.08em;
+      text-transform:uppercase; color:var(--gold);
+      background:var(--gold-dim); border:1px solid rgba(200,168,75,0.25);
+      padding:5px 12px; border-radius:var(--r-sm); margin-bottom:20px;
+    }
+
+    .profile-org {
+      background:var(--ink-3); border:1px solid var(--wire);
+      border-radius:var(--r-md); padding:14px;
+      font-size:13px; color:var(--chalk-2); text-align:left;
+      margin-bottom:20px;
+    }
+
+    .profile-org__label { font-family:var(--ff-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--chalk-3); margin-bottom:4px; }
+    .profile-org__value { font-weight:500; color:var(--chalk); }
+
+    .btn-signout {
+      width:100%; padding:10px; font-size:13px; font-family:var(--ff-body);
+      background:transparent; border:1px solid var(--wire-mid);
+      border-radius:var(--r-md); color:var(--chalk-3); cursor:pointer; transition:all 0.2s;
+    }
+    .btn-signout:hover { color:#e74c3c; border-color:rgba(192,57,43,0.4); background:rgba(192,57,43,0.06); }
+
+    /* Right: stats + details */
+    .profile-right { display:flex; flex-direction:column; gap:20px; }
+
+    .profile-section {
+      background:var(--ink-2); border:1px solid var(--wire);
+      border-radius:var(--r-lg); overflow:hidden;
+    }
+
+    .profile-section__head {
+      padding:16px 20px; border-bottom:1px solid var(--wire);
+      background:var(--ink-3); display:flex; align-items:center; justify-content:space-between;
+    }
+
+    .profile-section__title {
+      font-family:var(--ff-mono); font-size:11px; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--gold);
+    }
+
+    .profile-section__body { padding:20px; }
+
+    /* Stats grid */
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+    }
+
+    .stat-box {
+      background:var(--ink-3); border:1px solid var(--wire);
+      border-radius:var(--r-md); padding:16px; text-align:center;
+    }
+
+    .stat-box__num { font-family:var(--ff-display); font-size:28px; font-weight:700; line-height:1; margin-bottom:4px; }
+    .stat-box__label { font-size:11px; color:var(--chalk-3); letter-spacing:0.04em; }
+
+    /* Edit form */
+    .edit-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .field-label { display:block; font-family:var(--ff-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--chalk-3); margin-bottom:7px; }
+    .field-input, .field-select {
+      width:100%; background:var(--ink-3); border:1px solid var(--wire);
+      border-radius:var(--r-md); color:var(--chalk); font-family:var(--ff-body);
+      font-size:14px; padding:11px 13px; outline:none; transition:border-color 0.2s;
+      appearance:none;
+    }
+    .field-input:focus, .field-select:focus { border-color:rgba(200,168,75,0.5); }
+    .field-select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5268' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; cursor:pointer; }
+    .field-select option { background:var(--ink-2); }
+    .field { margin-bottom:0; }
+
+    .btn-save {
+      margin-top:16px; padding:10px 24px; font-size:13px; font-weight:600;
+      font-family:var(--ff-body); background:var(--gold); color:var(--ink);
+      border:none; border-radius:var(--r-md); cursor:pointer; transition:opacity 0.2s;
+    }
+    .btn-save:hover { opacity:0.88; }
+
+    .save-msg { font-size:12px; color:var(--teal-lit); margin-left:10px; opacity:0; transition:opacity 0.3s; }
+    .save-msg.show { opacity:1; }
+
+    /* Recent cases mini */
+    .mini-case {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 0; border-bottom:1px solid var(--wire);
+    }
+    .mini-case:last-child { border-bottom:none; padding-bottom:0; }
+    .mini-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .mini-verdict { font-size:13px; font-weight:500; color:var(--chalk); flex:1; }
+    .mini-id { font-family:var(--ff-mono); font-size:10px; color:var(--chalk-3); }
+    .mini-ts { font-size:11px; color:var(--chalk-3); }
+
+    .loading-placeholder { color:var(--chalk-3); font-size:13px; padding:20px 0; }
+
+    @media(max-width:900px) {
+      .profile-grid { grid-template-columns:1fr; }
+      .profile-card { position:static; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .edit-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="../index.html" class="nav__logo">
+      <img src="../assets/logo.svg" alt="Logo" class="nav__logo-icon"/>
+      EvidAI <span>Solutions</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="../index.html#analyzer">Analyzer</a></li>
+      <li><a href="history.html">Case History</a></li>
+      <li><a href="profile.html" class="active">Profile</a></li>
+    </ul>
+    <div class="nav__cta">
+      <a href="../index.html#analyzer" class="btn btn--gold btn--sm">Open Case</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="profile-hero">
+  <div class="container">
+    <div class="section-tag">Account</div>
+    <h1>Your Profile</h1>
+    <p style="margin-top:10px;font-size:15px;color:var(--chalk-2)">Manage your account, organization details, and view your investigation statistics.</p>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<section class="section">
+  <div class="container">
+    <div id="profile-loading" class="loading-placeholder">Loading profile…</div>
+    <div class="profile-grid" id="profile-content" style="display:none">
+
+      <!-- Left card -->
+      <div>
+        <div class="profile-card">
+          <div class="avatar" id="avatar-wrap">
+            <span id="avatar-initials">?</span>
+          </div>
+          <div class="profile-name" id="display-name">—</div>
+          <div class="profile-email" id="display-email">—</div>
+          <div class="profile-badge" id="display-role">Analyst</div>
+
+          <div class="profile-org">
+            <div class="profile-org__label">Organization</div>
+            <div class="profile-org__value" id="display-org">—</div>
+          </div>
+
+          <div class="profile-org" style="margin-bottom:20px">
+            <div class="profile-org__label">Org type</div>
+            <div class="profile-org__value" id="display-org-type">—</div>
+          </div>
+
+          <div class="profile-org" style="margin-bottom:20px">
+            <div class="profile-org__label">Member since</div>
+            <div class="profile-org__value" id="display-joined">—</div>
+          </div>
+
+          <button class="btn-signout" id="btn-signout">Sign out</button>
+        </div>
+      </div>
+
+      <!-- Right sections -->
+      <div class="profile-right">
+
+        <!-- Stats -->
+        <div class="profile-section">
+          <div class="profile-section__head">
+            <span class="profile-section__title">Investigation statistics</span>
+          </div>
+          <div class="profile-section__body">
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-box__num" id="stat-total" style="color:var(--chalk)">0</div>
+                <div class="stat-box__label">Total cases</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-box__num" id="stat-high" style="color:#e74c3c">0</div>
+                <div class="stat-box__label">Suspicious</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-box__num" id="stat-medium" style="color:#f39c12">0</div>
+                <div class="stat-box__label">Needs review</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-box__num" id="stat-low" style="color:#1abc9c">0</div>
+                <div class="stat-box__label">Safe</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent cases -->
+        <div class="profile-section">
+          <div class="profile-section__head">
+            <span class="profile-section__title">Recent cases</span>
+            <a href="history.html" class="btn btn--ghost btn--sm">View all</a>
+          </div>
+          <div class="profile-section__body" id="recent-cases">
+            <p class="loading-placeholder">No cases yet. <a href="../index.html#analyzer" style="color:var(--gold)">Run your first analysis →</a></p>
+          </div>
+        </div>
+
+        <!-- Edit profile -->
+        <div class="profile-section">
+          <div class="profile-section__head">
+            <span class="profile-section__title">Edit profile</span>
+          </div>
+          <div class="profile-section__body">
+            <div class="edit-grid">
+              <div class="field">
+                <label class="field-label">Display name</label>
+                <input class="field-input" type="text" id="edit-name" placeholder="Your name"/>
+              </div>
+              <div class="field">
+                <label class="field-label">Organization</label>
+                <input class="field-input" type="text" id="edit-org" placeholder="Organization name"/>
+              </div>
+              <div class="field">
+                <label class="field-label">Role</label>
+                <select class="field-select" id="edit-role">
+                  <option value="analyst">Risk Analyst</option>
+                  <option value="compliance">Compliance Officer</option>
+                  <option value="security">Security Investigator</option>
+                  <option value="hr">HR Professional</option>
+                  <option value="legal">Legal Counsel</option>
+                  <option value="executive">Executive / Manager</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label">Org type</label>
+                <select class="field-select" id="edit-org-type">
+                  <option value="corporate">Corporate</option>
+                  <option value="legal">Legal / Law</option>
+                  <option value="government">Government</option>
+                  <option value="financial">Financial</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;margin-top:16px;">
+              <button class="btn-save" id="btn-save">Save changes</button>
+              <span class="save-msg" id="save-msg">✓ Saved</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__brand"><img src="../assets/logo.svg" alt="Logo" style="width:24px;height:24px;"/> EvidAI <span>Solutions</span></div>
+      <ul class="footer__links">
+        <li><a href="../index.html#analyzer">Analyzer</a></li>
+        <li><a href="history.html">Case History</a></li>
+        <li><a href="profile.html">Profile</a></li>
+      </ul>
+      <div class="footer__copy">&copy; 2025 EvidAI — AI Detective Solutions.</div>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import {
+    auth, db,
+    requireAuth, signOut, getUserProfile,
+  } from '../assets/js/firebase-config.js';
+  import { doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const ORG_TYPE_LABELS = { corporate:'Corporate', legal:'Legal / Law', government:'Government', financial:'Financial', healthcare:'Healthcare', other:'Other' };
+  const ROLE_LABELS     = { analyst:'Risk Analyst', compliance:'Compliance Officer', security:'Security Investigator', hr:'HR Professional', legal:'Legal Counsel', executive:'Executive / Manager', other:'Other' };
+
+  // Require login
+  const user = await requireAuth('../pages/login.html');
+
+  // Load profile from Firestore
+  const profile = await getUserProfile(user.uid);
+
+  // Case history stats (from localStorage)
+  let cases = [];
+  try { cases = JSON.parse(localStorage.getItem('evidai_cases') || '[]'); } catch {}
+  const stats = {
+    total:  cases.length,
+    high:   cases.filter(c=>c.risk==='high').length,
+    medium: cases.filter(c=>c.risk==='medium').length,
+    low:    cases.filter(c=>c.risk==='low').length,
+  };
+
+  // Render
+  document.getElementById('profile-loading').style.display = 'none';
+  document.getElementById('profile-content').style.display = 'grid';
+
+  const name = profile?.displayName || user.displayName || user.email.split('@')[0];
+  const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+
+  // Avatar
+  if (user.photoURL) {
+    document.getElementById('avatar-wrap').innerHTML = `<img src="${user.photoURL}" alt="Avatar"/>`;
+  } else {
+    document.getElementById('avatar-initials').textContent = initials;
+  }
+
+  document.getElementById('display-name').textContent    = name;
+  document.getElementById('display-email').textContent   = user.email;
+  document.getElementById('display-role').textContent    = ROLE_LABELS[profile?.role] || 'Analyst';
+  document.getElementById('display-org').textContent     = profile?.organization || '—';
+  document.getElementById('display-org-type').textContent = ORG_TYPE_LABELS[profile?.orgType] || '—';
+  document.getElementById('display-joined').textContent  = profile?.createdAt
+    ? new Date(profile.createdAt.seconds * 1000).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})
+    : new Date(user.metadata.creationTime).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+
+  // Stats
+  document.getElementById('stat-total').textContent  = stats.total;
+  document.getElementById('stat-high').textContent   = stats.high;
+  document.getElementById('stat-medium').textContent = stats.medium;
+  document.getElementById('stat-low').textContent    = stats.low;
+
+  // Recent cases
+  const recentEl = document.getElementById('recent-cases');
+  if (cases.length) {
+    recentEl.innerHTML = cases.slice(0,5).map(c => {
+      const dotColor = c.risk==='high'?'#e74c3c':c.risk==='medium'?'#f39c12':'#1abc9c';
+      const ts = new Date(c.timestamp).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      return `<div class="mini-case">
+        <div class="mini-dot" style="background:${dotColor}"></div>
+        <span class="mini-verdict">${c.verdict}</span>
+        <span class="mini-id">${c.id}</span>
+        <span class="mini-ts">${ts}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Pre-fill edit form
+  document.getElementById('edit-name').value    = name;
+  document.getElementById('edit-org').value     = profile?.organization || '';
+  document.getElementById('edit-role').value    = profile?.role || 'analyst';
+  document.getElementById('edit-org-type').value = profile?.orgType || 'corporate';
+
+  // Save changes
+  document.getElementById('btn-save').addEventListener('click', async () => {
+    const newName    = document.getElementById('edit-name').value.trim();
+    const newOrg     = document.getElementById('edit-org').value.trim();
+    const newRole    = document.getElementById('edit-role').value;
+    const newOrgType = document.getElementById('edit-org-type').value;
+
+    await updateDoc(doc(db, 'users', user.uid), {
+      displayName:  newName,
+      organization: newOrg,
+      role:         newRole,
+      orgType:      newOrgType,
+    });
+
+    document.getElementById('display-name').textContent     = newName;
+    document.getElementById('display-org').textContent      = newOrg;
+    document.getElementById('display-role').textContent     = ROLE_LABELS[newRole];
+    document.getElementById('display-org-type').textContent = ORG_TYPE_LABELS[newOrgType];
+
+    const msg = document.getElementById('save-msg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2500);
+  });
+
+  // Sign out
+  document.getElementById('btn-signout').addEventListener('click', async () => {
+    await signOut(auth);
+    window.location.href = '../pages/login.html';
+  });
+</script>
+</body>
+</html>

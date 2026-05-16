@@ -27,7 +27,19 @@
       <li><a href="pages/history.html">Case History</a></li>
     </ul>
     <div class="nav__cta">
-      <a href="#analyzer" class="btn btn--gold btn--sm">Open Case</a>
+      <!-- Shown when logged out -->
+      <div id="nav-loggedout" style="display:flex;gap:8px;align-items:center;">
+        <a href="pages/login.html" class="btn btn--outline btn--sm">Sign in</a>
+        <a href="pages/signup.html" class="btn btn--gold btn--sm">Sign up</a>
+      </div>
+      <!-- Shown when logged in -->
+      <div id="nav-loggedin" style="display:none;align-items:center;gap:12px;">
+        <a href="#analyzer" class="btn btn--gold btn--sm">Open Case</a>
+        <a href="pages/profile.html" id="nav-avatar" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+          <div id="nav-avatar-circle" style="width:32px;height:32px;border-radius:50%;background:var(--gold-dim);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--gold);overflow:hidden;cursor:pointer;flex-shrink:0;">?</div>
+          <span id="nav-user-name" style="font-size:13px;color:var(--chalk-2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </a>
+      </div>
       <button class="nav__hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -391,5 +403,38 @@
 <script src="assets/js/history.js"></script>
 <script src="assets/js/pdf-export.js"></script>
 <script src="assets/js/main.js"></script>
+
+<!-- Firebase auth nav state -->
+<script type="module">
+  import { auth, getUserProfile } from './assets/js/firebase-config.js';
+  import { onAuthStateChanged }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+  onAuthStateChanged(auth, async (user) => {
+    const loggedOut = document.getElementById('nav-loggedout');
+    const loggedIn  = document.getElementById('nav-loggedin');
+    const avatarCircle = document.getElementById('nav-avatar-circle');
+    const nameEl    = document.getElementById('nav-user-name');
+
+    if (user) {
+      loggedOut.style.display = 'none';
+      loggedIn.style.display  = 'flex';
+
+      const profile = await getUserProfile(user.uid);
+      const name    = profile?.displayName || user.displayName || user.email.split('@')[0];
+      const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+
+      nameEl.textContent = name.split(' ')[0]; // first name only in nav
+
+      if (user.photoURL) {
+        avatarCircle.innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;" alt="avatar"/>`;
+      } else {
+        avatarCircle.textContent = initials;
+      }
+    } else {
+      loggedOut.style.display = 'flex';
+      loggedIn.style.display  = 'none';
+    }
+  });
+</script>
 </body>
 </html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account — EvidAI</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="../assets/css/main.css"/>
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+
+    .auth-wrap { width:100%; max-width:480px; }
+
+    .auth-brand {
+      display:flex; align-items:center; gap:10px; justify-content:center;
+      margin-bottom:36px; font-family:var(--ff-display); font-size:20px;
+      font-weight:700; color:var(--chalk);
+    }
+    .auth-brand span { color:var(--gold); }
+
+    .auth-card {
+      background:var(--ink-2); border:1px solid var(--wire-mid);
+      border-top:2px solid var(--gold); border-radius:var(--r-lg); padding:36px 32px;
+    }
+
+    .auth-title { font-family:var(--ff-display); font-size:26px; font-weight:700; color:var(--chalk); margin-bottom:6px; }
+    .auth-sub { font-size:13px; color:var(--chalk-3); margin-bottom:28px; }
+    .auth-sub a { color:var(--gold); text-decoration:none; }
+
+    .field { margin-bottom:16px; }
+    .field-label { display:block; font-family:var(--ff-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--chalk-3); margin-bottom:7px; }
+    .field-input, .field-select {
+      width:100%; background:var(--ink-3); border:1px solid var(--wire);
+      border-radius:var(--r-md); color:var(--chalk); font-family:var(--ff-body);
+      font-size:14px; padding:12px 14px; outline:none; transition:border-color 0.2s;
+      appearance:none;
+    }
+    .field-input:focus, .field-select:focus { border-color:rgba(200,168,75,0.5); }
+    .field-input::placeholder { color:var(--chalk-3); }
+    .field-select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5268' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; cursor:pointer; }
+    .field-select option { background:var(--ink-2); }
+
+    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+    /* Org type selector */
+    .org-types { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
+    .org-type {
+      border:1px solid var(--wire); border-radius:var(--r-md); padding:12px 8px;
+      text-align:center; cursor:pointer; transition:all 0.2s; background:var(--ink-3);
+    }
+    .org-type:hover { border-color:var(--wire-hi); }
+    .org-type.selected { border-color:var(--gold); background:var(--gold-dim); }
+    .org-type__icon { font-size:20px; margin-bottom:4px; }
+    .org-type__label { font-size:11px; color:var(--chalk-3); font-family:var(--ff-mono); }
+    .org-type.selected .org-type__label { color:var(--gold); }
+
+    .divider { display:flex; align-items:center; gap:12px; margin:24px 0; color:var(--chalk-3); font-size:12px; }
+    .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--wire); }
+
+    .btn-google {
+      width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+      padding:12px; background:var(--ink-3); border:1px solid var(--wire-mid);
+      border-radius:var(--r-md); color:var(--chalk); font-family:var(--ff-body);
+      font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s;
+    }
+    .btn-google:hover { background:var(--ink-4); border-color:var(--wire-hi); }
+
+    .btn-submit {
+      width:100%; margin-top:24px; padding:13px; font-size:14px; font-weight:600;
+      letter-spacing:0.04em; font-family:var(--ff-body); background:var(--gold);
+      color:var(--ink); border:none; border-radius:var(--r-md); cursor:pointer; transition:opacity 0.2s;
+    }
+    .btn-submit:hover { opacity:0.88; }
+    .btn-submit:disabled { opacity:0.5; cursor:not-allowed; }
+
+    .terms { font-size:11px; color:var(--chalk-3); text-align:center; margin-top:14px; }
+    .terms a { color:var(--gold); text-decoration:none; }
+
+    .auth-error {
+      background:rgba(192,57,43,0.1); border:1px solid rgba(192,57,43,0.3);
+      border-radius:var(--r-md); color:#e74c3c; font-size:13px;
+      padding:10px 14px; margin-top:16px; display:none;
+    }
+
+    .auth-footer { text-align:center; margin-top:24px; font-size:13px; color:var(--chalk-3); }
+    .auth-footer a { color:var(--gold); text-decoration:none; }
+  </style>
+</head>
+<body>
+<div class="auth-wrap">
+
+  <div class="auth-brand">
+    <img src="../assets/logo.svg" width="32" height="32" alt="EvidAI"/>
+    EvidAI <span>Solutions</span>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-title">Create your account</div>
+    <p class="auth-sub">Join EvidAI to start investigating.<br>
+      Already have an account? <a href="login.html">Sign in</a>
+    </p>
+
+    <!-- Google -->
+    <button class="btn-google" id="btn-google">
+      <svg width="18" height="18" viewBox="0 0 18 18">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z"/>
+      </svg>
+      Continue with Google
+    </button>
+
+    <div class="divider">or create with email</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label">First name</label>
+        <input class="field-input" type="text" id="first-name" placeholder="Ada" autocomplete="given-name"/>
+      </div>
+      <div class="field">
+        <label class="field-label">Last name</label>
+        <input class="field-input" type="text" id="last-name" placeholder="Lovelace" autocomplete="family-name"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Work email</label>
+      <input class="field-input" type="email" id="email" placeholder="you@organization.com" autocomplete="email"/>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Organization name</label>
+      <input class="field-input" type="text" id="org-name" placeholder="Acme Corp" autocomplete="organization"/>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Organization type</label>
+      <div class="org-types" id="org-types">
+        <div class="org-type selected" data-value="corporate">
+          <div class="org-type__icon">🏢</div>
+          <div class="org-type__label">Corporate</div>
+        </div>
+        <div class="org-type" data-value="legal">
+          <div class="org-type__icon">⚖️</div>
+          <div class="org-type__label">Legal / Law</div>
+        </div>
+        <div class="org-type" data-value="government">
+          <div class="org-type__icon">🏛️</div>
+          <div class="org-type__label">Government</div>
+        </div>
+        <div class="org-type" data-value="financial">
+          <div class="org-type__icon">🏦</div>
+          <div class="org-type__label">Financial</div>
+        </div>
+        <div class="org-type" data-value="healthcare">
+          <div class="org-type__icon">🏥</div>
+          <div class="org-type__label">Healthcare</div>
+        </div>
+        <div class="org-type" data-value="other">
+          <div class="org-type__icon">🔍</div>
+          <div class="org-type__label">Other</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Your role</label>
+      <select class="field-select" id="role">
+        <option value="analyst">Risk Analyst</option>
+        <option value="compliance">Compliance Officer</option>
+        <option value="security">Security Investigator</option>
+        <option value="hr">HR Professional</option>
+        <option value="legal">Legal Counsel</option>
+        <option value="executive">Executive / Manager</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Password</label>
+      <input class="field-input" type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password"/>
+    </div>
+
+    <button class="btn-submit" id="btn-signup">Create account</button>
+
+    <p class="terms">By creating an account you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+
+  <div class="auth-footer">
+    Already have an account? <a href="login.html">Sign in</a>
+  </div>
+
+</div>
+
+<script type="module">
+  import {
+    auth, db, gProvider,
+    createUserWithEmailAndPassword,
+    signInWithPopup,
+    updateProfile,
+    saveUserProfile,
+    redirectIfLoggedIn,
+  } from '../assets/js/firebase-config.js';
+  import { doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  redirectIfLoggedIn('../index.html');
+
+  let selectedOrgType = 'corporate';
+
+  // Org type selector
+  document.querySelectorAll('.org-type').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.org-type').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedOrgType = el.dataset.value;
+    });
+  });
+
+  function showError(msg) {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function friendlyError(code) {
+    const map = {
+      'auth/email-already-in-use': 'An account with this email already exists.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/weak-password':        'Password must be at least 6 characters.',
+      'auth/network-request-failed':'Network error. Check your connection.',
+    };
+    return map[code] || 'Sign-up failed. Please try again.';
+  }
+
+  async function saveProfile(user, extra) {
+    await setDoc(doc(db, 'users', user.uid), {
+      uid:          user.uid,
+      email:        user.email,
+      displayName:  extra.displayName || user.displayName || '',
+      photoURL:     user.photoURL || '',
+      organization: extra.organization || '',
+      orgType:      extra.orgType || 'other',
+      role:         extra.role || 'analyst',
+      createdAt:    serverTimestamp(),
+    }, { merge: true });
+  }
+
+  // Email signup
+  document.getElementById('btn-signup').addEventListener('click', async () => {
+    const first   = document.getElementById('first-name').value.trim();
+    const last    = document.getElementById('last-name').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const org     = document.getElementById('org-name').value.trim();
+    const role    = document.getElementById('role').value;
+    const pass    = document.getElementById('password').value;
+    const btn     = document.getElementById('btn-signup');
+
+    if (!first || !last || !email || !org || !pass) { showError('Please fill in all required fields.'); return; }
+    if (pass.length < 8) { showError('Password must be at least 8 characters.'); return; }
+
+    btn.disabled    = true;
+    btn.textContent = 'Creating account…';
+
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(cred.user, { displayName: `${first} ${last}` });
+      await saveProfile(cred.user, {
+        displayName:  `${first} ${last}`,
+        organization: org,
+        orgType:      selectedOrgType,
+        role,
+      });
+      window.location.href = '../index.html';
+    } catch (err) {
+      showError(friendlyError(err.code));
+      btn.disabled    = false;
+      btn.textContent = 'Create account';
+    }
+  });
+
+  // Google signup
+  document.getElementById('btn-google').addEventListener('click', async () => {
+    try {
+      const cred = await signInWithPopup(auth, gProvider);
+      await saveProfile(cred.user, {
+        displayName:  cred.user.displayName,
+        organization: '',
+        orgType:      'other',
+        role:         'analyst',
+      });
+      window.location.href = '../index.html';
+    } catch (err) {
+      showError(err.message);
+    }
+  });
+</script>
+</body>
+</html>
