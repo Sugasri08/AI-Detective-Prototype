@@ -244,6 +244,7 @@
       <li><a href="../index.html#analyzer">Analyzer</a></li>
       <li><a href="history.html" class="active">Case History</a></li>
       <li><a href="about.html">About</a></li>
+      <li><a href="profile.html">Profile</a></li>
     </ul>
     <div class="nav__cta">
       <a href="../index.html#analyzer" class="btn btn--gold btn--sm">Open Case</a>
@@ -309,6 +310,7 @@
         <li><a href="../index.html#analyzer">Analyzer</a></li>
         <li><a href="history.html">Case History</a></li>
         <li><a href="about.html">About</a></li>
+      <li><a href="profile.html">Profile</a></li>
       </ul>
       <div class="footer__copy">&copy; 2025 EvidAI — AI Detective Solutions.</div>
     </div>
@@ -317,57 +319,57 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../assets/js/engine.js"></script>
+<script src="../assets/js/pattern-library.js"></script>
 <script src="../assets/js/history.js"></script>
 <script src="../assets/js/pdf-export.js"></script>
 <script>
   let activeFilter = 'all';
 
+  console.log('[EvidAI History] Cases in storage:', CaseHistory.getAll().length);
+
   function renderStats() {
-    const s = CaseHistory.getStats();
-    document.getElementById('stat-total').textContent  = s.total;
-    document.getElementById('stat-high').textContent   = s.high;
-    document.getElementById('stat-medium').textContent = s.medium;
-    document.getElementById('stat-low').textContent    = s.low;
+    try {
+      const s = CaseHistory.getStats();
+      document.getElementById('stat-total').textContent  = s.total;
+      document.getElementById('stat-high').textContent   = s.high;
+      document.getElementById('stat-medium').textContent = s.medium;
+      document.getElementById('stat-low').textContent    = s.low;
+    } catch(err) { console.error('[EvidAI] renderStats error:', err); }
   }
 
   function renderCases() {
-    const list = document.getElementById('cases-list');
-    let cases  = CaseHistory.getAll();
+    try {
+      const list = document.getElementById('cases-list');
+      let cases  = CaseHistory.getAll();
+      if (activeFilter !== 'all') cases = cases.filter(c => c.risk === activeFilter);
 
-    if (activeFilter !== 'all') cases = cases.filter(c => c.risk === activeFilter);
+      if (!cases.length) {
+        const msg = activeFilter === 'all'
+          ? 'No cases yet. <a href="../index.html#analyzer" style="color:var(--gold)">Run your first analysis →</a>'
+          : 'No cases in this category.';
+        list.innerHTML = `<div class="empty-state"><svg class="empty-state__icon" viewBox="0 0 56 56" fill="none"><path d="M28 4L6 14v16c0 14 9.5 27 22 30.5C40.5 57 50 44 50 30V14L28 4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="26" cy="29" r="9" stroke="currentColor" stroke-width="1.5"/><line x1="32.4" y1="35.4" x2="38" y2="41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="empty-state__title">${activeFilter==='all'?'No cases yet':'No cases in this category'}</div><div class="empty-state__sub">${msg}</div></div>`;
+        return;
+      }
 
-    if (!cases.length) {
-      list.innerHTML = `
-        <div class="empty-state">
-          <svg class="empty-state__icon" viewBox="0 0 56 56" fill="none">
-            <path d="M28 4L6 14v16c0 14 9.5 27 22 30.5C40.5 57 50 44 50 30V14L28 4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-            <circle cx="26" cy="29" r="9" stroke="currentColor" stroke-width="1.5"/>
-            <line x1="32.4" y1="35.4" x2="38" y2="41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="empty-state__title">${activeFilter === 'all' ? 'No cases yet' : 'No cases in this category'}</div>
-          <div class="empty-state__sub">${activeFilter === 'all' ? 'Run your first analysis to start building your case archive.' : 'Try a different filter or run more analyses.'}</div>
-          <a href="../index.html#analyzer" class="btn btn--gold">Open the Analyzer</a>
-        </div>`;
-      return;
-    }
+      list.innerHTML = cases.map(c => {
+        const dotColor = c.risk==='high'?'var(--red)':c.risk==='medium'?'var(--amber-lit)':'var(--teal-lit)';
+        const vColor   = c.risk==='high'?'var(--red-lit)':c.risk==='medium'?'var(--amber-lit)':'var(--teal-lit)';
+        const ts = new Date(c.timestamp).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        const preview = (c.rawText||'').length > 120 ? c.rawText.slice(0,120)+'…' : (c.rawText||'');
+        const badge = c.semanticMode
+          ? '<span class="engine-badge engine-sem" style="font-size:9px">Semantic</span>'
+          : '<span class="engine-badge engine-rule" style="font-size:9px">Rule-based</span>';
 
-    list.innerHTML = cases.map(c => {
-      const dotColor = c.risk === 'high' ? 'var(--red)' : c.risk === 'medium' ? 'var(--amber-lit)' : 'var(--teal-lit)';
-      const vColor   = c.risk === 'high' ? 'var(--red-lit)' : c.risk === 'medium' ? 'var(--amber-lit)' : 'var(--teal-lit)';
-      const ts = new Date(c.timestamp).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-      const preview = c.rawText.length > 120 ? c.rawText.slice(0, 120) + '…' : c.rawText;
-
-      return `
-        <div class="history-card risk-${c.risk}" data-id="${c.id}" onclick="toggleCard(this)">
+        return `<div class="history-card risk-${c.risk}" data-id="${c.id}" onclick="toggleCard(this)">
           <div class="history-card__head">
             <div class="history-card__left">
               <div class="risk-dot" style="background:${dotColor}"></div>
               <div>
-                <div class="history-card__verdict" style="color:${vColor}">${c.verdict}</div>
+                <div class="history-card__verdict" style="color:${vColor};display:flex;align-items:center;gap:8px">${c.verdict} ${badge}</div>
                 <div class="history-card__meta">
                   <span>${c.id}</span>
                   <span>${c.confidence}% confidence</span>
-                  <span>${c.evidence.length} signals</span>
+                  <span>${(c.evidence||[]).length} signals</span>
                   <span>${ts}</span>
                 </div>
               </div>
@@ -380,16 +382,15 @@
           <div class="history-card__preview">${preview}</div>
           <div class="case-expanded-body" id="expanded-${c.id}"></div>
         </div>`;
-    }).join('');
+      }).join('');
+    } catch(err) { console.error('[EvidAI] renderCases error:', err); }
   }
 
   function toggleCard(card) {
-    const id   = card.dataset.id;
-    const body = document.getElementById(`expanded-${id}`);
+    const id    = card.dataset.id;
+    const body  = document.getElementById('expanded-'+id);
     const isOpen = card.classList.contains('expanded');
-
     document.querySelectorAll('.history-card.expanded').forEach(c => c.classList.remove('expanded'));
-
     if (!isOpen) {
       card.classList.add('expanded');
       if (!body.innerHTML) {
@@ -400,36 +401,68 @@
   }
 
   function buildExpandedCase(c) {
-    const ht = Analyzer.highlightEvidence(c.rawText, c.evidence);
-    const barColor = c.risk==='high'?'#c0392b':c.risk==='medium'?'#c47d11':'#148a74';
-    const hi = c.evidence.filter(e=>e.level==='high');
-    const mi = c.evidence.filter(e=>e.level==='medium');
-    const si = c.evidence.filter(e=>e.level==='safe');
-    const pills = (items,cls) => items.map(e=>`<span class="pill ${cls}">${e.type==='pat'?`<em>${e.label}:</em> `:''}"${e.text}"</span>`).join('');
-    const grp = (items,cls,h) => items.length ? `<div class="ev-grp"><span class="ev-hed">${h}</span>${pills(items,cls)}</div>` : '';
-    return `
-      <div class="conf-row">
-        <span class="conf-lbl">Risk confidence</span>
-        <div class="conf-track"><div class="conf-fill" style="width:${c.confidence}%;background:${barColor}"></div></div>
-        <span class="conf-pct">${c.confidence}%</span>
-      </div>
-      <div class="transcript-lbl">Analyzed transcript</div>
-      <div class="transcript">${ht}</div>
-      <div class="ev-groups">
-        ${grp(hi,'ph','High-risk signals')}
-        ${grp(mi,'pm','Medium-risk signals')}
-        ${grp(si,'ps','Safe signals')}
-        ${c.evidence.length===0?'<p style="font-size:12px;color:var(--chalk-3)">No notable signals detected.</p>':''}
-      </div>
-      <div class="case-foot">
-        <span class="score-lbl">Internal score: <strong>${c.score}</strong> / 20</span>
-        <button class="btn btn--ghost btn--sm" onclick="exportPDF('${c.id}');event.stopPropagation()">Download PDF</button>
-      </div>`;
+    try {
+      const barColor = c.risk==='high'?'#c0392b':c.risk==='medium'?'#c47d11':'#148a74';
+
+      // Use kwEvidence for highlighting if semantic, else use evidence
+      const kwEv = c.kwEvidence || c.evidence?.filter(e=>e.type!=='semantic') || [];
+      const ht = typeof Analyzer !== 'undefined'
+        ? Analyzer.highlightEvidence(c.rawText || '', kwEv)
+        : (c.rawText || '');
+
+      // Build evidence display
+      let evidHTML = '';
+      if (c.semanticMode && c.evidence?.length) {
+        const riskEv = c.evidence.filter(e=>e.level!=='safe');
+        const safeEv = c.evidence.filter(e=>e.level==='safe');
+        const semBars = items => items.map(e => {
+          const pct = Math.round((e.similarity||0)*100);
+          const bar = e.level==='high'?'#c0392b':e.level==='medium'?'#c47d11':'#148a74';
+          const cls = e.level==='high'?'ph':e.level==='medium'?'pm':'ps';
+          return `<div class="sem-match">
+            <div class="sem-match__top"><span class="pill ${cls}" style="font-size:10px">${e.category||e.text}</span><span class="sem-match__pct">${pct}% match</span></div>
+            <div class="sem-match__text">"${e.text}"</div>
+            <div class="sem-match__bar-track"><div class="sem-match__bar" style="width:${pct}%;background:${bar}"></div></div>
+          </div>`;
+        }).join('');
+        evidHTML = `
+          ${riskEv.length?`<div class="transcript-lbl" style="margin-top:12px">Semantic pattern matches</div><div class="sem-matches">${semBars(riskEv)}</div>`:''}
+          ${safeEv.length?`<div class="transcript-lbl" style="margin-top:12px">Safe patterns</div><div class="sem-matches">${semBars(safeEv)}</div>`:''}`;
+      } else {
+        const ev  = c.evidence || [];
+        const hi  = ev.filter(e=>e.level==='high');
+        const mi  = ev.filter(e=>e.level==='medium');
+        const si  = ev.filter(e=>e.level==='safe');
+        const pills = (items,cls) => items.map(e=>`<span class="pill ${cls}">"${e.text}"</span>`).join('');
+        const grp   = (items,cls,h) => items.length?`<div class="ev-grp"><span class="ev-hed">${h}</span>${pills(items,cls)}</div>`:'';
+        evidHTML = `<div class="ev-groups" style="margin-top:12px">
+          ${grp(hi,'ph','High-risk')}${grp(mi,'pm','Medium-risk')}${grp(si,'ps','Safe')}
+          ${!ev.length?'<p style="font-size:12px;color:var(--chalk-3)">No signals detected.</p>':''}
+        </div>`;
+      }
+
+      return `
+        <div class="conf-row">
+          <span class="conf-lbl">Risk confidence</span>
+          <div class="conf-track"><div class="conf-fill" style="width:${c.confidence}%;background:${barColor}"></div></div>
+          <span class="conf-pct">${c.confidence}%</span>
+        </div>
+        <div class="transcript-lbl">Analyzed transcript</div>
+        <div class="transcript">${ht}</div>
+        ${evidHTML}
+        <div class="case-foot" style="margin-top:14px">
+          <span class="score-lbl">Score: <strong>${c.score}</strong> / 20</span>
+          <button class="btn btn--ghost btn--sm" onclick="exportPDF('${c.id}');event.stopPropagation()">Download PDF</button>
+        </div>`;
+    } catch(err) {
+      console.error('[EvidAI] buildExpandedCase error:', err);
+      return `<p style="color:var(--red-lit);padding:12px">Error rendering case.</p>`;
+    }
   }
 
   function exportPDF(id) {
     const c = CaseHistory.getById(id);
-    if (c) PDFExport.generate(c);
+    if (c && typeof PDFExport !== 'undefined') PDFExport.generate(c);
   }
 
   function deleteCase(id) {
@@ -440,7 +473,6 @@
     }
   }
 
-  // Filters
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -450,7 +482,6 @@
     });
   });
 
-  // Clear all
   document.getElementById('clear-all-btn').addEventListener('click', () => {
     if (confirm('Clear all case history? This cannot be undone.')) {
       CaseHistory.clearAll();
@@ -459,9 +490,18 @@
     }
   });
 
-  // Init
-  renderStats();
-  renderCases();
+  // Init on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    renderStats();
+    renderCases();
+  });
+
+  // Also render immediately in case DOMContentLoaded already fired
+  if (document.readyState !== 'loading') {
+    renderStats();
+    renderCases();
+  }
+
 </script>
 </body>
 </html>
