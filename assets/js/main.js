@@ -83,14 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (typeof SemanticEngine !== 'undefined') {
-    setStatus('⟳ Loading semantic model…', 'var(--gold)');
+    setStatus('⟳ Connecting to HuggingFace…', 'var(--gold)');
 
     SemanticEngine.loadModel((pct) => {
-      setStatus(`⟳ Loading semantic model… ${pct}%`, 'var(--gold)');
+      setStatus(`⟳ Connecting to HuggingFace… ${pct}%`, 'var(--gold)');
     }).then(() => {
-      setStatus('⟳ Building pattern index…', 'var(--gold)');
+      setStatus('⟳ Building semantic index…', 'var(--gold)');
       // Pre-build pattern embeddings while user is reading the page
-      return SemanticEngine.classify('test warmup query');
+      
     }).then(() => {
       setStatus('✓ Semantic search ready', 'var(--teal-lit)');
     }).catch(() => {
