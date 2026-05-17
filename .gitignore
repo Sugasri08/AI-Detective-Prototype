@@ -1,0 +1,12 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel/
+
+# Config with secrets — never commit
+assets/js/config.js
+
+# Logs
+*.log
